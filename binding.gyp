@@ -1,11 +1,11 @@
 {
   "targets": [
     {
-      "target_name": "mknod",
-      "sources": [ "rabin-bindings.cc", "src/msb.c", "src/rabinpoly.c", "src/sha1.c" ],
+      "target_name": "rabin",
+      "sources": [ "rabin.cc", "src/msb.cc", "src/rabinpoly.cc", "src/sha1.cc" ],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
       ],
-    }
+    },
   ]
 }
