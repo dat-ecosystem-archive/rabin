@@ -1,0 +1,16 @@
+{
+  "name": "rabin",
+  "version": "1.0.0",
+  "description": "node native bindings to a C rabin fingerprinting algorithm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "gypfile": true,
+  "author": "max ogden",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "nan": "^2.1.0"
+  }
+}
