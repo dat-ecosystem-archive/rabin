@@ -4,7 +4,8 @@
   "description": "node native bindings to a C rabin fingerprinting algorithm",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "node-gyp rebuild"
   },
   "gypfile": true,
   "author": "max ogden",
@@ -12,5 +13,14 @@
   "dependencies": {
     "bindings": "^1.2.1",
     "nan": "^2.1.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxogden/rabin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/maxogden/rabin/issues"
+  },
+  "homepage": "https://github.com/maxogden/rabin#readme"
 }
