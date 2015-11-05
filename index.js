@@ -1,4 +1,4 @@
-var stream = require('stream')
+var stream = require('readable-stream')
 var util = require('util')
 var rabin = require('bindings')('rabin')
 var BufferList = require('bl')
