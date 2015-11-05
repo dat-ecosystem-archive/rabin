@@ -1,4 +1,4 @@
 var rabin = require('./')
-rabin('/Users/max/Downloads/veloroutes_id_134279.kml', function (err, result) {
+rabin(process.argv[2], function (err, result) {
   console.log('DONE', [err, result])
 })
