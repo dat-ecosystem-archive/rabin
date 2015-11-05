@@ -1,1 +1,1 @@
-module.exports = require('bindings')('rabin').rabin
+module.exports = require('bindings')('rabin')

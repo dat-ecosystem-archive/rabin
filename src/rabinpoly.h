@@ -51,6 +51,8 @@ public:
 class window : public rabinpoly {
 public:
   int size;
+  u_int64_t start;
+  u_int64_t end;
 private:
   u_int64_t fingerprint;
   int bufpos;
