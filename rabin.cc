@@ -1,5 +1,3 @@
-// copy pasta from example1.cpp
-
 #include <nan.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,11 +41,6 @@ char *sha1_to_hex(const unsigned char *sha1)
     return buffer;
 }
 
-void usage() {
-    fprintf(stderr, "Usage: %s <file-to-read> <sliding-window-size>\n", progname);
-    fprintf(stderr, "\tExample) %s testfile 16\n", progname);
-}
-
 int run_task(char* filename, int windowsize)
 {
     int count;
@@ -55,7 +48,7 @@ int run_task(char* filename, int windowsize)
     off_t _cur_pos = 0, _last_pos = 0;
     int min_size_suppress = 0, max_size_suppress = 0;
     u_int64_t rabinf;
-    unsigned char buf[BUFSIZE];     // buffer to read data in
+    unsigned char buf[BUFSIZE]; // buffer to read data in
     struct sha1_ctx c;
     unsigned char sha1[20];
 
@@ -68,62 +61,99 @@ int run_task(char* filename, int windowsize)
     // OPEN THE FILE
     fd = open(filename, O_RDONLY);
     if (!fd) {
-    fprintf(stderr, "Failed to open %s\n", filename);
-    return -1;
+      fprintf(stderr, "Failed to open %s\n", filename);
+      return -1;
     }
 
     sha1_init(&c);
 
     while( (count = read(fd, buf, BUFSIZE)) > 0 ) {
-    // FEED RABINPOLY CLASS BYTE-BY-BYTE
-    // count the offset in file
-    for (int i=0; i<count; i++, _cur_pos++) {
+      // FEED RABINPOLY CLASS BYTE-BY-BYTE
+      // count the offset in file
+      for (int i=0; i<count; i++, _cur_pos++) {
         rabinf = myRabin.slide8(buf[i]);
         size_t cs = _cur_pos - _last_pos;
         sha1_update(&c, &buf[i], 1); //update sha1 for each data
 
         if ((rabinf % MEAN_CHUNK_SIZE) == BREAKMARK_VALUE && cs < MIN_CHUNK_SIZE)
-        min_size_suppress++;
+          min_size_suppress++;
         else if (cs == MAX_CHUNK_SIZE)
-        max_size_suppress++;
+          max_size_suppress++;
         if (((rabinf % MEAN_CHUNK_SIZE) == BREAKMARK_VALUE && cs >= MIN_CHUNK_SIZE)
         || cs >= MAX_CHUNK_SIZE) {
-        /*reset rabin poly buf*/
-        myRabin.reset();
-        /* finish sha1 hash */
-        sha1_final(&c, sha1);
+          /*reset rabin poly buf*/
+          myRabin.reset();
+          /* finish sha1 hash */
+          sha1_final(&c, sha1);
 
-        struct chunk new_chunk;
-        new_chunk.offset = _last_pos;
-        new_chunk.size = cs;
-        memcpy(new_chunk.sha1sum, sha1, 20);
+          struct chunk new_chunk;
+          new_chunk.offset = _last_pos;
+          new_chunk.size = cs;
+          memcpy(new_chunk.sha1sum, sha1, 20);
 
-        /* reset cursor */
-        _last_pos = _cur_pos;
-        /* */
-        printf("%s\t%lu\n", sha1_to_hex(new_chunk.sha1sum),
-               new_chunk.size);
+          /* reset cursor */
+          _last_pos = _cur_pos;
+          /* */
+          printf("%s\t%lu\n", sha1_to_hex(new_chunk.sha1sum),
+                 new_chunk.size);
 
-        /* reset sha1 digest */
-        sha1_init(&c);
+          /* reset sha1 digest */
+          sha1_init(&c);
         }
-    }
+      }
     }
     /*FIXME : we should handle last chunk here*/
+    sha1_final(&c, sha1);
+    size_t cs = _cur_pos - _last_pos;
+    printf("%s\t%lu\n", sha1_to_hex(sha1), cs);
+    
     close(fd);
     return 1;
 }
 
 using namespace v8;
 
+class RabinWorker : public Nan::AsyncWorker {
+ public:
+  RabinWorker(Nan::Callback *callback, char *path)
+    : Nan::AsyncWorker(callback), path(path) {}
+  ~RabinWorker() {}
+
+  void Execute () {
+    // READ THE FILE AND COMPUTE RABIN FINGERPRINT
+    this->error = run_task(path, 16);
+    free(path);
+  }
+
+  void HandleOKCallback () {
+    Nan::HandleScope scope;
+    if (this->error == -1) {
+      Local<Value> tmp[] = {
+        Nan::Error("rabin failed")
+      };
+      callback->Call(1, tmp);
+    } else {
+      callback->Call(0, NULL);
+    }
+  }
+
+ private:
+  char *path;
+  int error;
+};
+
 NAN_METHOD(Rabin) {
   Nan::HandleScope scope;
   if (!info[0]->IsString()) return Nan::ThrowError("path must be a string");
 
-  Nan::Utf8String path(info[0]);
+  if (!info[1]->IsFunction()) return Nan::ThrowError("callback must be a function");
+  Local<Function> callback = info[1].As<Function>();
 
-  // READ THE FILE AND COMPUTE RABIN FINGERPRINT
-  run_task(*path, 16);
+  Nan::Utf8String path(info[0]);
+  char *path_alloc = (char *) malloc(1024);
+  stpcpy(path_alloc, *path);
+  
+  Nan::AsyncQueueWorker(new RabinWorker(new Nan::Callback(callback), path_alloc));
 }
 
 NAN_MODULE_INIT(InitAll) {
