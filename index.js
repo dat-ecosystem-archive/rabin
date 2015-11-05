@@ -11,6 +11,7 @@ function Rabin () {
   this.rabinEnded = false
   this.rabin = rabin.initialize()
   this.last = 0
+  this.nextCb = null
   this.buffers = new BufferList()
   this.on('finish', function () {
     if (this.buffers.length) this.push(this.buffers.slice(0, this.buffers.length))
@@ -30,6 +31,7 @@ Rabin.prototype.rabinEnd = function () {
 
 Rabin.prototype._writev = function (batch, cb) {
   var self = this
+  var drained = true
   if (this.destroyed) return cb()
   var bufs = batch.map(function (b) {
     self.buffers.append(b.chunk)
@@ -43,13 +45,18 @@ Rabin.prototype._writev = function (batch, cb) {
     this.last += size
     var buf = this.buffers.slice(0, size)
     this.buffers.consume(size)
-    this.push(buf)
+    drained = this.push(buf)
   }
-  cb()
+  if (drained) cb()
+  else this.nextCb = cb
 }
 
 Rabin.prototype._read = function (size) {
-  
+  var nextCb = this.nextCb
+  if (nextCb) {
+    this.nextCb = null
+    nextCb()
+  }
 }
 
 Rabin.prototype._write = function (data, enc, cb) {
