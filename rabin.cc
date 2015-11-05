@@ -25,7 +25,7 @@ void get_fingerprints(window *rabin, Local<Array> bufs, Local<Array> offsets) {
       rabinf = rabin->slide8(*buf++);
       if (((rabinf % MEAN_CHUNK_SIZE) == BREAKMARK_VALUE && cs >= MIN_CHUNK_SIZE)
       || cs >= MAX_CHUNK_SIZE) {
-        offsets->Set(chunk_idx++, Nan::New<Number>(rabin->start));
+        offsets->Set(chunk_idx++, Nan::New<Number>(rabin->end));
         rabin->start = rabin->end;
         rabin->reset();
       }
