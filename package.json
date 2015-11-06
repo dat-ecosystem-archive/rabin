@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "node-gyp rebuild"
+    "install": "prebuild --download",
+    "prebuild": "prebuild"
   },
   "gypfile": true,
   "author": "max ogden",
@@ -17,6 +18,7 @@
     "bindings": "^1.2.1",
     "bl": "^1.0.0",
     "nan": "^2.1.0",
+    "prebuild": "^2.6.2",
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {},
