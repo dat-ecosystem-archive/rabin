@@ -141,7 +141,7 @@ struct rabin_t *rabin_init(void) {
 
     struct rabin_t *h;
 
-    if ((h = malloc(sizeof(struct rabin_t))) == NULL) {
+    if ((h = (struct rabin_t *) malloc(sizeof(struct rabin_t))) == NULL) {
         errx(1, "malloc()");
     }
 

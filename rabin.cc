@@ -16,7 +16,6 @@ void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> offsets) 
 
     while (1) {
         int remaining = rabin_next_chunk(hasher, ptr, len);
-        printf("%i", remaining);
         if (remaining < 0) {
             break;
         }

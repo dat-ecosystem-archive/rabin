@@ -2,6 +2,7 @@ var stream = require('readable-stream')
 var util = require('util')
 var rabin = require('bindings')('rabin')
 var BufferList = require('bl')
+var debug = require('debug')('rabin')
 
 module.exports = Rabin
 
@@ -39,6 +40,7 @@ Rabin.prototype._writev = function (batch, cb) {
   })
   var offsets = []
   rabin.fingerprint(this.rabin, bufs, offsets)
+  debug('offsets', offsets)
   for (var i = 0; i < offsets.length; i++) {
     var offset = offsets[i]
     var size = offset - this.last
