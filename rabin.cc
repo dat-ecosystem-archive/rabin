@@ -4,18 +4,48 @@
 using namespace v8;
 
 #define FINGERPRINT_PT  0xbfe6b8a5bf378d83LL
-#define BREAKMARK_VALUE 0x78
-#define MIN_CHUNK_SIZE  (2 * 1024)
+#define MIN_CHUNK_SIZE  (16 * 1024)
+#define AVG_CHUNK_SIZE  (32 * 1024)
 #define MAX_CHUNK_SIZE  (64 * 1024 -1)
-#define MEAN_CHUNK_SIZE MIN_CHUNK_SIZE
 
 static window *fingerprints[1024];
 static int fingerprint_counter = 0;
+
+// /usr/src/linux-headers-3.8.0-32/include/asm-generic/bitops/fls.h
+static inline u_int fls32(u_int32_t x)
+{
+	int r = 32;
+
+	if (!x)
+		return 0;
+	if (!(x & 0xffff0000u)) {
+		x <<= 16;
+		r -= 16;
+	}
+	if (!(x & 0xff000000u)) {
+		x <<= 8;
+		r -= 8;
+	}
+	if (!(x & 0xf0000000u)) {
+		x <<= 4;
+		r -= 4;
+	}
+	if (!(x & 0xc0000000u)) {
+		x <<= 2;
+		r -= 2;
+	}
+	if (!(x & 0x80000000u)) {
+		x <<= 1;
+		r -= 1;
+	}
+	return r;
+}
 
 void get_fingerprints(window *rabin, Local<Array> bufs, Local<Array> offsets) {
   int count = bufs->Length();
   u_int64_t rabinf;
   int chunk_idx = 0;
+  u_int BREAKMARK = (1 << (fls32(AVG_CHUNK_SIZE) - 1)) - 1;
   for (int i = 0; i < count; i++) {
     char *buf = node::Buffer::Data(bufs->Get(i));
     int byte_count = node::Buffer::Length(bufs->Get(i));
@@ -23,8 +53,7 @@ void get_fingerprints(window *rabin, Local<Array> bufs, Local<Array> offsets) {
       rabin->end++;
       int cs = rabin->end - rabin->start;
       rabinf = rabin->slide8(*buf++);
-      if (((rabinf % MEAN_CHUNK_SIZE) == BREAKMARK_VALUE && cs >= MIN_CHUNK_SIZE)
-      || cs >= MAX_CHUNK_SIZE) {
+      if ((rabinf & BREAKMARK) == BREAKMARK && cs > MIN_CHUNK_SIZE) { 
         offsets->Set(chunk_idx++, Nan::New<Number>(rabin->end));
         rabin->start = rabin->end;
         rabin->reset();
