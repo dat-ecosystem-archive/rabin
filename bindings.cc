@@ -23,7 +23,7 @@ void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> offsets) 
         len -= remaining;
         ptr += remaining;
 
-        offsets->Set(chunk_idx++, Nan::New<Number>(last_chunk.start));
+        offsets->Set(chunk_idx++, Nan::New<Number>(last_chunk.start + last_chunk.length));
     }
   }
 }

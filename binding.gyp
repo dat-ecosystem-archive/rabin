@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "rabin",
-      "sources": [ "rabin.cc", "src/rabin.c"],
+      "sources": [ "bindings.cc", "src/rabin.cc"],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
       ],
