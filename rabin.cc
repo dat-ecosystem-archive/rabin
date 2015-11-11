@@ -3,48 +3,44 @@
 
 using namespace v8;
 
-#define FINGERPRINT_PT  0xbfe6b8a5bf378d83LL
-#define MIN_CHUNK_SIZE  (16 * 1024)
-#define AVG_CHUNK_SIZE  (32 * 1024)
-#define MAX_CHUNK_SIZE  (64 * 1024 -1)
+static rabin_t *instances[1024];
+static int instance_counter = 0;
 
-static window *fingerprints[1024];
-static int fingerprint_counter = 0;
-
-void get_fingerprints(window *rabin, Local<Array> bufs, Local<Array> offsets) {
+void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> offsets) {
   int count = bufs->Length();
-  u_int64_t rabinf;
   int chunk_idx = 0;
-  u_int BREAKMARK = (1 << (fls32(AVG_CHUNK_SIZE) - 1)) - 1;
   for (int i = 0; i < count; i++) {
-    char *buf = node::Buffer::Data(bufs->Get(i));
-    int byte_count = node::Buffer::Length(bufs->Get(i));
-    for (int j = 0; j < byte_count; j++) {
-      rabin->end++;
-      int cs = rabin->end - rabin->start;
-      rabinf = rabin->slide8(*buf++);
-      if ((rabinf & BREAKMARK) == BREAKMARK && cs > MIN_CHUNK_SIZE) { 
-        offsets->Set(chunk_idx++, Nan::New<Number>(rabin->end));
-        rabin->start = rabin->end;
-        rabin->reset();
-      }
+    uint8_t *buf = (uint8_t*) node::Buffer::Data(bufs->Get(i));
+    int len = node::Buffer::Length(bufs->Get(i));
+    uint8_t *ptr = &buf[0];
+
+    while (1) {
+        int remaining = rabin_next_chunk(hasher, ptr, len);
+        printf("%i", remaining);
+        if (remaining < 0) {
+            break;
+        }
+
+        len -= remaining;
+        ptr += remaining;
+
+        offsets->Set(chunk_idx++, Nan::New<Number>(last_chunk.start));
     }
   }
 }
 
 NAN_METHOD(Initialize) {
-  if (fingerprint_counter >= 1024) return Nan::ThrowError("the value of fingerprint_counter is too damn high");
-  window *myRabin = new window(FINGERPRINT_PT, 16);
-  myRabin->start = 0;
-  myRabin->end = 0;
-  fingerprints[fingerprint_counter++] = myRabin;
-  info.GetReturnValue().Set(fingerprint_counter - 1);
+  if (instance_counter >= 1024) return Nan::ThrowError("the value of instance_counter is too damn high");
+  struct rabin_t *hasher;
+  hasher = rabin_init();
+  instances[instance_counter++] = hasher;
+  info.GetReturnValue().Set(instance_counter - 1);
 }
 
 NAN_METHOD(Fingerprint) {
   if (!info[0]->IsNumber()) return Nan::ThrowError("fingerprint_idx must be a number");
   int fingerprint_idx = info[0]->Uint32Value();
-  window *fingerprint_ptr = fingerprints[fingerprint_idx];
+  rabin_t *fingerprint_ptr = instances[fingerprint_idx];
 
   if (!info[1]->IsArray()) return Nan::ThrowError("source must be an array"); 
   Local<Array> src = info[1].As<Array>();
@@ -58,10 +54,10 @@ NAN_METHOD(Fingerprint) {
 NAN_METHOD(End) {
   if (!info[0]->IsNumber()) return Nan::ThrowError("fingerprint_idx must be a number");
   int fingerprint_idx = info[0]->Uint32Value();
-  window *fingerprint_ptr = fingerprints[fingerprint_idx];
-  fingerprints[fingerprint_idx] = NULL;
-  while (fingerprint_counter > 0 && fingerprints[fingerprint_counter - 1] == NULL) {
-    fingerprint_counter--;
+  rabin_t *fingerprint_ptr = instances[fingerprint_idx];
+  instances[fingerprint_idx] = NULL;
+  while (instance_counter > 0 && instances[instance_counter - 1] == NULL) {
+    instance_counter--;
   }
   
   delete fingerprint_ptr;
