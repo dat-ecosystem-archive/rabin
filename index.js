@@ -6,11 +6,14 @@ var debug = require('debug')('rabin')
 
 module.exports = Rabin
 
-function Rabin () {
-  if (!(this instanceof Rabin)) return new Rabin()
+function Rabin (opts) {
+  if (!(this instanceof Rabin)) return new Rabin(opts)
   this.destroyed = false
   this.rabinEnded = false
-  this.rabin = rabin.initialize()
+  var avgBits = +opts.bits || 12
+  var min = +opts.min || 8 * 1024
+  var max = +opts.max || 32 * 1024
+  this.rabin = rabin.initialize(avgBits, min, max)
   this.nextCb = null
   this.buffers = new BufferList()
   this.on('finish', function () {
