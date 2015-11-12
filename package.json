@@ -1,12 +1,21 @@
 {
   "name": "rabin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "node native bindings to a C rabin fingerprinting algorithm",
   "main": "index.js",
   "bin": {
     "rabin": "cli.js"
   },
-  "keywords": ["rabin", "cdc", "chunking", "fingerprint", "rolling hash", "dedupe", "deduplication", "rsync"],
+  "keywords": [
+    "rabin",
+    "cdc",
+    "chunking",
+    "fingerprint",
+    "rolling hash",
+    "dedupe",
+    "deduplication",
+    "rsync"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "install": "prebuild --download && echo \"Installed prebuilt binary successfully.\n\"",
