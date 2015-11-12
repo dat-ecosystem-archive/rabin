@@ -6,7 +6,7 @@ using namespace v8;
 static rabin_t *instances[1024];
 static int instance_counter = 0;
 
-void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> offsets) {
+void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> lengths) {
   int count = bufs->Length();
   int chunk_idx = 0;
   for (int i = 0; i < count; i++) {
@@ -23,7 +23,7 @@ void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> offsets) 
         len -= remaining;
         ptr += remaining;
 
-        offsets->Set(chunk_idx++, Nan::New<Number>(last_chunk.start + last_chunk.length));
+        lengths->Set(chunk_idx++, Nan::New<Number>(last_chunk.length));
     }
   }
 }
@@ -41,12 +41,12 @@ NAN_METHOD(Fingerprint) {
   int fingerprint_idx = info[0]->Uint32Value();
   rabin_t *fingerprint_ptr = instances[fingerprint_idx];
 
-  if (!info[1]->IsArray()) return Nan::ThrowError("source must be an array"); 
+  if (!info[1]->IsArray()) return Nan::ThrowError("source must be an array");
   Local<Array> src = info[1].As<Array>();
 
-  if (!info[2]->IsArray()) return Nan::ThrowError("dest must be an array"); 
+  if (!info[2]->IsArray()) return Nan::ThrowError("dest must be an array");
   Local<Array> dest = info[2].As<Array>();
-  
+
   get_fingerprints(fingerprint_ptr, src, dest);
 }
 
@@ -58,7 +58,7 @@ NAN_METHOD(End) {
   while (instance_counter > 0 && instances[instance_counter - 1] == NULL) {
     instance_counter--;
   }
-  
+
   delete fingerprint_ptr;
 }
 

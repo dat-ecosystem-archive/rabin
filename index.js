@@ -11,13 +11,12 @@ function Rabin () {
   this.destroyed = false
   this.rabinEnded = false
   this.rabin = rabin.initialize()
-  this.last = 0
   this.nextCb = null
   this.buffers = new BufferList()
   this.on('finish', function () {
     if (this.buffers.length) this.push(this.buffers.slice(0, this.buffers.length))
     this.push(null)
-    
+
   })
   stream.Duplex.call(this, {objectMode: true})
 }
@@ -38,13 +37,11 @@ Rabin.prototype._writev = function (batch, cb) {
     self.buffers.append(b.chunk)
     return b.chunk
   })
-  var offsets = []
-  rabin.fingerprint(this.rabin, bufs, offsets)
-  debug('offsets', offsets)
-  for (var i = 0; i < offsets.length; i++) {
-    var offset = offsets[i]
-    var size = offset - this.last
-    this.last += size
+  var lengths = []
+  rabin.fingerprint(this.rabin, bufs, lengths)
+  debug('chunks', lengths)
+  for (var i = 0; i < lengths.length; i++) {
+    var size = lengths[i]
     var buf = this.buffers.slice(0, size)
     this.buffers.consume(size)
     drained = this.push(buf)
