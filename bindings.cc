@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <nan.h>
 #include "src/rabin.h"
 
@@ -23,15 +24,15 @@ void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> lengths) 
         len -= remaining;
         ptr += remaining;
 
-        lengths->Set(chunk_idx++, Nan::New<Number>(last_chunk.length));
+        lengths->Set(chunk_idx++, Nan::New<Number>(hasher->chunk_length));
     }
   }
 }
 
 NAN_METHOD(Initialize) {
   if (instance_counter >= 1024) return Nan::ThrowError("the value of instance_counter is too damn high");
-  struct rabin_t *hasher;
-  hasher = rabin_init();
+  struct rabin_t *hasher = (struct rabin_t *) malloc(sizeof(struct rabin_t));
+  rabin_init(hasher);
   instances[instance_counter++] = hasher;
   info.GetReturnValue().Set(instance_counter - 1);
 }
@@ -59,7 +60,7 @@ NAN_METHOD(End) {
     instance_counter--;
   }
 
-  delete fingerprint_ptr;
+  free(fingerprint_ptr);
 }
 
 NAN_MODULE_INIT(InitAll) {

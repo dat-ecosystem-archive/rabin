@@ -17,21 +17,15 @@ struct rabin_t {
   uint64_t pos;
   uint64_t start;
   uint64_t digest;
+  uint64_t chunk_start;
+  uint64_t chunk_length;
+  uint64_t chunk_cut_fingerprint;
 };
 
-struct chunk_t {
-  uint64_t start;
-  uint64_t length;
-  uint64_t cut_fingerprint;
-};
-
-extern struct chunk_t last_chunk;
-
-struct rabin_t *rabin_init(void);
+struct rabin_t *rabin_init(struct rabin_t *h);
 void rabin_reset(struct rabin_t *h);
 void rabin_slide(struct rabin_t *h, uint8_t b);
 void rabin_append(struct rabin_t *h, uint8_t b);
 int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, uint64_t len);
-struct chunk_t *rabin_finalize(struct rabin_t *h);
 
 #endif
