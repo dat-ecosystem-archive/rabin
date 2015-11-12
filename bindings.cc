@@ -32,6 +32,13 @@ void get_fingerprints(rabin_t *hasher, Local<Array> bufs, Local<Array> lengths) 
 NAN_METHOD(Initialize) {
   if (instance_counter >= 1024) return Nan::ThrowError("the value of instance_counter is too damn high");
   struct rabin_t *hasher = (struct rabin_t *) malloc(sizeof(struct rabin_t));
+  hasher->polynomial = 0x3DA3358B4DC173LL;
+  hasher->polynomial_degree = 53;
+  hasher->average_bits = 14;
+  hasher->minsize = 8 * 1024;
+  hasher->maxsize = 32 * 1024;
+  hasher->mask = ((1<<hasher->average_bits)-1);
+  hasher->polynomial_shift = (hasher->polynomial_degree-8);
   rabin_init(hasher);
   instances[instance_counter++] = hasher;
   info.GetReturnValue().Set(instance_counter - 1);

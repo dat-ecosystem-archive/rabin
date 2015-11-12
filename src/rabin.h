@@ -3,12 +3,7 @@
 
 #include <stdint.h>
 
-#define POLYNOMIAL 0x3DA3358B4DC173LL
-#define POLYNOMIAL_DEGREE 53
 #define WINSIZE 64
-#define AVERAGE_BITS 14
-#define MINSIZE (8*1024)
-#define MAXSIZE (32*1024)
 
 struct rabin_t {
   uint8_t window[WINSIZE];
@@ -20,6 +15,13 @@ struct rabin_t {
   uint64_t chunk_start;
   uint64_t chunk_length;
   uint64_t chunk_cut_fingerprint;
+  uint64_t polynomial;
+  uint64_t polynomial_degree;
+  uint64_t polynomial_shift;
+  uint64_t average_bits;
+  uint64_t minsize;
+  uint64_t maxsize;
+  uint64_t mask;
 };
 
 struct rabin_t *rabin_init(struct rabin_t *h);

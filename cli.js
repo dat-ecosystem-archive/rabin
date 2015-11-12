@@ -18,6 +18,3 @@ rs.pipe(rabin).on('data', function (ch) {
 }).on('end', function () {
   console.error('average', ~~(offset / count))
 })
-
-// var averageChunkSize = 16 * 1024
-// Math.pow(Math.ceil(Math.log2(averageChunkSize)) - 1, 2) - 1
