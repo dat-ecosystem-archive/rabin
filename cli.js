@@ -11,7 +11,7 @@ rs.pipe(rabin).on('data', function (ch) {
   var hash = crypto.createHash('sha256').update(ch).digest('hex')
   var data = {
     length: ch.length,
-    offset: offset,
+    offset: offset - ch.length,
     hash: hash
   }
   console.log(JSON.stringify(data))
