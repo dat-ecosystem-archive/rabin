@@ -29,7 +29,7 @@ static int deg(uint64_t p) {
 // Mod calculates the remainder of x divided by p.
 static uint64_t mod(uint64_t x, uint64_t p) {
     while (deg(x) >= deg(p)) {
-        unsigned int shift = deg(x) - deg(p);
+        uint64_t shift = deg(x) - deg(p);
 
         x = x ^ (p << shift);
     }
@@ -106,8 +106,8 @@ void rabin_reset(struct rabin_t *h) {
     rabin_slide(h, 1);
 }
 
-int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, unsigned int len) {
-    for (unsigned int i = 0; i < len; i++) {
+int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, uint64_t len) {
+    for (uint64_t i = 0; i < len; i++) {
         uint8_t b = *buf++;
 
         rabin_slide(h, b);
@@ -121,7 +121,7 @@ int rabin_next_chunk(struct rabin_t *h, uint8_t *buf, unsigned int len) {
             last_chunk.cut_fingerprint = h->digest;
 
             // keep position
-            unsigned int pos = h->pos;
+            uint64_t pos = h->pos;
             rabin_reset(h);
             h->start = pos;
             h->pos = pos;
@@ -145,6 +145,8 @@ struct rabin_t *rabin_init(void) {
         errx(1, "malloc()");
     }
 
+    h->pos = 0;
+    h->start = 0;
     rabin_reset(h);
 
     return h;
