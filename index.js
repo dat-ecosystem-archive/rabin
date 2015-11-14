@@ -21,7 +21,7 @@ function Rabin (opts) {
   this.on('finish', function () {
     if (this.buffers.length) this.push(this.buffers.slice(0, this.buffers.length))
     this.push(null)
-
+    this.rabinEnd()
   })
 }
 
