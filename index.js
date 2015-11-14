@@ -38,8 +38,9 @@ Rabin.prototype._writev = function (batch, cb) {
   var drained = true
   if (this.destroyed) return cb()
   var bufs = batch.map(function (b) {
-    self.buffers.append(b.chunk)
-    return b.chunk
+    var chunk = toBuffer(b.chunk)
+    self.buffers.append(chunk)
+    return chunk
   })
   var lengths = []
   rabin.fingerprint(this.rabin, bufs, lengths)
@@ -72,4 +73,8 @@ Rabin.prototype.destroy = function (err) {
   this.rabinEnd()
   if (err) this.emit('error', err)
   this.emit('close')
+}
+
+function toBuffer (buf) {
+  return Buffer.isBuffer(buf) ? buf : new Buffer(buf)
 }
