@@ -1,6 +1,6 @@
 {
   "name": "rabin",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "node native bindings to a C rabin fingerprinting algorithm",
   "main": "index.js",
   "bin": {
