@@ -8,6 +8,8 @@ module.exports = Rabin
 
 function Rabin (opts) {
   if (!(this instanceof Rabin)) return new Rabin(opts)
+  if (!opts) opts = {}
+  stream.Duplex.call(this, {objectMode: true})
   this.destroyed = false
   this.rabinEnded = false
   var avgBits = +opts.bits || 12
@@ -21,7 +23,6 @@ function Rabin (opts) {
     this.push(null)
 
   })
-  stream.Duplex.call(this, {objectMode: true})
 }
 
 util.inherits(Rabin, stream.Duplex)
