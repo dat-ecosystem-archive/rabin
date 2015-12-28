@@ -7,15 +7,15 @@ var offset = 0
 var rs = fs.createReadStream(args._[0])
 var count = 0
 rs.pipe(rabin).on('data', function (ch) {
-  offset += ch.length
-  count++
   var hash = crypto.createHash('sha256').update(ch).digest('hex')
   var data = {
     length: ch.length,
-    offset: offset - ch.length,
+    offset: offset,
     hash: hash
   }
   console.log(JSON.stringify(data))
+  offset += ch.length
+  count++
 }).on('end', function () {
   console.error('average', ~~(offset / count))
 })
