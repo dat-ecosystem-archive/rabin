@@ -6,7 +6,7 @@
           ["OS == 'win'", {
               "defines": [
                   "_HAS_EXCEPTIONS=0"
-              ], 
+              ],
               "msvs_settings": {
                   "VCCLCompilerTool": {
                       "RuntimeTypeInfo": "false"
@@ -20,7 +20,7 @@
               ]
           }]
       ],
-      "sources": [ "bindings.cc", "src/rabin.cc"],
+      "sources": [ "bindings.cc", "src/rabin.cc", "src/rabin_wrap.cc"],
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
       ],
