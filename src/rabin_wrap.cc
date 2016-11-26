@@ -87,10 +87,9 @@ void RabinWrap::Init () {
 Local<Value> RabinWrap::NewInstance () {
   Nan::EscapableHandleScope scope;
 
-  Local<Object> instance;
-
   Local<FunctionTemplate> constructorHandle = Nan::New<FunctionTemplate>(rabin_constructor);
-  instance = constructorHandle->GetFunction()->NewInstance(0, NULL);
+  Local<Function> function = Nan::GetFunction(constructorHandle).ToLocalChecked();
+  Local<Object> instance = Nan::NewInstance(function, 0, NULL).ToLocalChecked();
 
   return scope.Escape(instance);
 }
