@@ -17,7 +17,7 @@
     "rsync"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"It built! Add more tests later.\"",
     "install": "prebuild --install",
     "prebuild": "prebuild --all --strip --verbose"
   },
