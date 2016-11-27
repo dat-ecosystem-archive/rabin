@@ -19,7 +19,8 @@
   "scripts": {
     "test": "echo \"It built! Add more tests later.\"",
     "install": "prebuild --install",
-    "prebuild": "prebuild --all --strip --verbose"
+    "prebuild": "prebuild --all --strip --verbose",
+    "upload": "node upload.js"
   },
   "gypfile": true,
   "author": "max ogden",
@@ -33,7 +34,9 @@
     "prebuild": "^4.1.2",
     "readable-stream": "^2.0.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "win-spawn": "^2.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/maxogden/rabin.git"

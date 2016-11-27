@@ -13,6 +13,9 @@ addons:
       - g++-4.8
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX=g++-4.8; fi
+script:
+  - npm test
+  - npm run upload
 os:
   - osx
   - linux
