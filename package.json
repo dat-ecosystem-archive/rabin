@@ -35,7 +35,7 @@
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "win-spawn": "^2.0.0"
+    "cross-spawn": "^5.0.1"
   },
   "repository": {
     "type": "git",

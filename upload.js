@@ -1,5 +1,5 @@
 var execSync = require('child_process').execSync
-var spawn = require('win-spawn')
+var spawn = require('cross-spawn')
 var join = require('path').join
 
 function version (rev) {
