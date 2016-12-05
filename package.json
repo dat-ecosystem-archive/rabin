@@ -17,10 +17,9 @@
     "rsync"
   ],
   "scripts": {
-    "test": "echo \"It built! Add more tests later.\"",
+    "test": "echo \"It built! Add more tests later.\" && prebuild-ci",
     "install": "prebuild --install",
-    "prebuild": "prebuild --all --strip --verbose",
-    "upload": "node upload.js"
+    "prebuild": "prebuild --all --strip --verbose"
   },
   "gypfile": true,
   "author": "max ogden",
@@ -35,7 +34,7 @@
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "cross-spawn": "^5.0.1"
+    "prebuild-ci": "^1.0.1"
   },
   "repository": {
     "type": "git",
