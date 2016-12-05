@@ -36,10 +36,10 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maxogden/rabin.git"
+    "url": "git+https://github.com/datproject/rabin.git"
   },
   "bugs": {
-    "url": "https://github.com/maxogden/rabin/issues"
+    "url": "https://github.com/datproject/rabin/issues"
   },
-  "homepage": "https://github.com/maxogden/rabin#readme"
+  "homepage": "https://github.com/datproject/rabin#readme"
 }
