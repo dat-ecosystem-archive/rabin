@@ -17,7 +17,7 @@
     "rsync"
   ],
   "scripts": {
-    "test": "echo \"It built! Add more tests later.\"",
+    "test": "echo \"It built! Add more tests later.\" && prebuild-ci",
     "install": "prebuild --install",
     "prebuild": "prebuild --all --strip --verbose"
   },
@@ -33,7 +33,9 @@
     "prebuild": "^4.1.2",
     "readable-stream": "^2.0.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "prebuild-ci": "^1.0.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/datproject/rabin.git"
