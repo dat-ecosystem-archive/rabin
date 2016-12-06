@@ -2,7 +2,7 @@
 
 Node native addon module (C/C++) for [Rabin fingerprinting](https://en.wikipedia.org/wiki/Rabin_fingerprint) data streams.
 
-[![Build Status](https://travis-ci.org/maxogden/rabin.svg?branch=master)](https://travis-ci.org/maxogden/rabin)
+[![Build Status](https://travis-ci.org/datproject/rabin.svg?branch=master)](https://travis-ci.org/datproject/rabin)
 
 Uses the implementation of Rabin fingerprinting from [LBFS](https://github.com/fd0/lbfs/tree/bdf4f17d23b68536e7805c88e269026c74c32d59/liblbfs).
 
