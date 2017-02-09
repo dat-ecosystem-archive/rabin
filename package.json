@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "test": "echo \"It built! Add more tests later.\" && prebuild-ci",
-    "install": "prebuild --install",
+    "install": "prebuild-install || node-gyp rebuild",
     "prebuild": "prebuild --all --strip --verbose"
   },
   "gypfile": true,
@@ -30,11 +30,12 @@
     "debug": "^2.2.0",
     "minimist": "^1.2.0",
     "nan": "^2.1.0",
-    "prebuild": "^4.1.2",
+    "prebuild-install": "^2.1.0",
     "readable-stream": "^2.0.4"
   },
   "devDependencies": {
-    "prebuild-ci": "^1.0.1"
+    "prebuild": "^6.0.2",
+    "prebuild-ci": "^2.0.0"
   },
   "repository": {
     "type": "git",
