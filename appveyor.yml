@@ -13,6 +13,7 @@ platform:
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
+  - ps: if ($env:nodejs_version -eq "5") { npm i npm@latest -g }
   - npm install
 
 test_script:
