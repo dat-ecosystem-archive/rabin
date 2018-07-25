@@ -16,8 +16,10 @@ function Rabin (opts) {
   var avgBits = +opts.bits || 12
   var min = +opts.min || 8 * 1024
   var max = +opts.max || 32 * 1024
+  var w = +opts.window || 64
+  var polynomial = opts.polynomial || "0x3DA3358B4DC173"
   this.rabin = rabin.rabin()
-  this.rabin.configure(avgBits, min, max)
+  this.rabin.configure(avgBits, min, max, w, polynomial)
   this.nextCb = null
   this.buffers = new BufferList()
   this.pending = []

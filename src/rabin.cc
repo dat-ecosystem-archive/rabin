@@ -55,7 +55,7 @@ static void calc_tables(struct rabin_t *h) {
         uint64_t hash = 0;
 
         hash = append_byte(hash, (uint8_t)b, h->polynomial);
-        for (int i = 0; i < WINSIZE-1; i++) {
+        for (int i = 0; i < h->winsize-1; i++) {
             hash = append_byte(hash, 0, h->polynomial);
         }
         out_table[b] = hash;
@@ -86,12 +86,12 @@ void rabin_slide(struct rabin_t *h, uint8_t b) {
     uint8_t out = h->window[h->wpos];
     h->window[h->wpos] = b;
     h->digest = (h->digest ^ out_table[out]);
-    h->wpos = (h->wpos +1 ) % WINSIZE;
+    h->wpos = (h->wpos +1 ) % h->winsize;
     rabin_append(h, b);
 }
 
 void rabin_reset(struct rabin_t *h) {
-    for (int i = 0; i < WINSIZE; i++)
+    for (int i = 0; i < h->winsize; i++)
         h->window[i] = 0;
     h->digest = 0;
     h->wpos = 0;

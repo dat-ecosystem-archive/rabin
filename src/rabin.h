@@ -2,11 +2,12 @@
 #define _RABIN_H
 
 #include <stdint.h>
+#include <vector>
 
 #define WINSIZE 64
 
 struct rabin_t {
-  uint8_t window[WINSIZE];
+  std::vector<uint8_t> window;
   uint64_t wpos;
   uint64_t count;
   uint64_t pos;
@@ -22,6 +23,7 @@ struct rabin_t {
   uint64_t minsize;
   uint64_t maxsize;
   uint64_t mask;
+  int winsize;
 };
 
 struct rabin_t *rabin_init(struct rabin_t *h);

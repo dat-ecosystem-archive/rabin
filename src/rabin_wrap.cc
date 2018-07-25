@@ -1,4 +1,7 @@
 #include <stdlib.h>
+#include <sstream>
+#include <node.h>
+#include <v8.h>
 #include "rabin_wrap.h"
 
 static Nan::Persistent<FunctionTemplate> rabin_constructor;
@@ -46,17 +49,34 @@ NAN_METHOD(RabinWrap::Configure) {
   if (!info[0]->IsNumber()) return Nan::ThrowError("first arg must be a number");
   if (!info[1]->IsNumber()) return Nan::ThrowError("second arg must be a number");
   if (!info[2]->IsNumber()) return Nan::ThrowError("third arg must be a number");
+  if (!info[3]->IsNumber()) return Nan::ThrowError("fourth arg must be a number");
+  if (!info[4]->IsString()) return Nan::ThrowError("fifth arg must be a string");
 
   struct rabin_t *handle = &(self->handle);
 
   handle->average_bits = info[0]->Uint32Value();
   handle->minsize = info[1]->Uint32Value();
   handle->maxsize = info[2]->Uint32Value();
+  handle->winsize = info[3]->Uint32Value();
+  handle->window.reserve(info[3]->Uint32Value());
 
   // Open a pull request if you need these to be configurable
   handle->mask = ((1<<handle->average_bits)-1);
-  handle->polynomial = 0x3DA3358B4DC173LL;
-  handle->polynomial_degree = 53;
+
+  // Convert string representation of polynomial to 64bit integer
+  String::Utf8Value utf8(info[4]->ToString());
+  std::stringstream ss;
+  char* ps = *utf8;
+  if (utf8.length() > 2 && ps[0] == '0' && ps[1] == 'x') {
+    ss << std::hex << (ps + 2);
+  } else {
+    ss << ps;
+  }
+  ss >> handle->polynomial;
+
+  uint64_t index = handle->polynomial;
+  handle->polynomial_degree = 0;
+  while (index >>= 1) ++handle->polynomial_degree;
   handle->polynomial_shift = (handle->polynomial_degree-8);
 
   rabin_init(handle);

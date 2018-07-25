@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var fs = require('fs')
 var crypto = require('crypto')
-var args = require('minimist')(process.argv.slice(2))
+var args = require('minimist')(process.argv.slice(2), {string: "polynomial"})
 var rabin = require('./')(args)
 var offset = 0
 var rs = fs.createReadStream(args._[0])
