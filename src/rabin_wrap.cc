@@ -49,9 +49,9 @@ NAN_METHOD(RabinWrap::Configure) {
 
   struct rabin_t *handle = &(self->handle);
 
-  handle->average_bits = info[0]->Uint32Value();
-  handle->minsize = info[1]->Uint32Value();
-  handle->maxsize = info[2]->Uint32Value();
+  handle->average_bits = info[0]->Uint32Value(Nan::GetCurrentContext()).FromJust();
+  handle->minsize = info[1]->Uint32Value(Nan::GetCurrentContext()).FromJust();
+  handle->maxsize = info[2]->Uint32Value(Nan::GetCurrentContext()).FromJust();
 
   // Open a pull request if you need these to be configurable
   handle->mask = ((1<<handle->average_bits)-1);
