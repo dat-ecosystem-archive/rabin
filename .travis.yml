@@ -1,10 +1,7 @@
 language: node_js
 
 node_js:
-  - "lts/*"
-  - 8
-  - 10
-  - node
+  -12
 
 addons:
   apt:
