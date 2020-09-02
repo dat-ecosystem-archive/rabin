@@ -26,7 +26,7 @@
   "license": "ISC",
   "dependencies": {
     "bindings": "^1.2.1",
-    "bl": "^1.0.0",
+    "bl": "^4.0.3",
     "debug": "^2.2.0",
     "minimist": "^1.2.0",
     "nan": "^2.1.0",
